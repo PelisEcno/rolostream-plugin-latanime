@@ -15,25 +15,10 @@
       "devDependencies": []
     },
     {
-      "name": "cookie_jar",
-      "version": "4.0.9",
-      "dependencies": [
-        "meta",
-        "universal_io"
-      ]
-    },
-    {
       "name": "html",
       "version": "0.15.7",
       "dependencies": [
         "csslib",
-        "source_span"
-      ]
-    },
-    {
-      "name": "csslib",
-      "version": "1.0.2",
-      "dependencies": [
         "source_span"
       ]
     },
@@ -46,25 +31,12 @@
       ]
     },
     {
-      "name": "universal_io",
-      "version": "2.3.1",
+      "name": "cookie_jar",
+      "version": "4.0.9",
       "dependencies": [
-        "collection",
         "meta",
-        "typed_data"
+        "universal_io"
       ]
-    },
-    {
-      "name": "typed_data",
-      "version": "1.4.0",
-      "dependencies": [
-        "collection"
-      ]
-    },
-    {
-      "name": "collection",
-      "version": "1.19.1",
-      "dependencies": []
     },
     {
       "name": "dio",
@@ -80,36 +52,6 @@
       ]
     },
     {
-      "name": "path",
-      "version": "1.9.1",
-      "dependencies": []
-    },
-    {
-      "name": "http_parser",
-      "version": "4.1.2",
-      "dependencies": [
-        "collection",
-        "source_span",
-        "string_scanner",
-        "typed_data"
-      ]
-    },
-    {
-      "name": "string_scanner",
-      "version": "1.4.1",
-      "dependencies": [
-        "source_span"
-      ]
-    },
-    {
-      "name": "async",
-      "version": "2.13.1",
-      "dependencies": [
-        "collection",
-        "meta"
-      ]
-    },
-    {
       "name": "source_span",
       "version": "1.10.2",
       "dependencies": [
@@ -119,13 +61,24 @@
       ]
     },
     {
-      "name": "term_glyph",
-      "version": "1.2.2",
-      "dependencies": []
+      "name": "csslib",
+      "version": "1.0.2",
+      "dependencies": [
+        "source_span"
+      ]
     },
     {
-      "name": "mime",
-      "version": "2.1.0",
+      "name": "universal_io",
+      "version": "2.3.1",
+      "dependencies": [
+        "collection",
+        "meta",
+        "typed_data"
+      ]
+    },
+    {
+      "name": "meta",
+      "version": "1.19.0",
       "dependencies": []
     },
     {
@@ -139,14 +92,61 @@
       ]
     },
     {
+      "name": "path",
+      "version": "1.9.1",
+      "dependencies": []
+    },
+    {
+      "name": "mime",
+      "version": "2.1.0",
+      "dependencies": []
+    },
+    {
+      "name": "http_parser",
+      "version": "4.1.2",
+      "dependencies": [
+        "collection",
+        "source_span",
+        "string_scanner",
+        "typed_data"
+      ]
+    },
+    {
+      "name": "collection",
+      "version": "1.19.1",
+      "dependencies": []
+    },
+    {
+      "name": "async",
+      "version": "2.13.1",
+      "dependencies": [
+        "collection",
+        "meta"
+      ]
+    },
+    {
+      "name": "term_glyph",
+      "version": "1.2.2",
+      "dependencies": []
+    },
+    {
+      "name": "typed_data",
+      "version": "1.4.0",
+      "dependencies": [
+        "collection"
+      ]
+    },
+    {
       "name": "web",
       "version": "1.1.1",
       "dependencies": []
     },
     {
-      "name": "meta",
-      "version": "1.19.0",
-      "dependencies": []
+      "name": "string_scanner",
+      "version": "1.4.1",
+      "dependencies": [
+        "source_span"
+      ]
     }
   ],
   "configVersion": 1

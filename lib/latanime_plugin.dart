@@ -50,6 +50,14 @@ class VideoServer {
   VideoServer({required this.nombre, required this.url});
 }
 
+class RecentSerie {
+  final String titulo;
+  final String url;
+  final String imagen;
+  
+  RecentSerie({required this.titulo, required this.url, required this.imagen});
+}
+
 // --- Lógica del Plugin ---
 class LatanimePlugin {
   static const String _userAgent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36';
@@ -162,6 +170,40 @@ class LatanimePlugin {
           url: url,
           imagen: imagen,
           fecha: fecha,
+        ));
+      }
+    }
+    
+    return recientes;
+  }
+
+    Future<List<RecentSerie>> getRecentSeries() async {
+    final res = await _dio.get<String>('https://latanime.org/', options: Options(responseType: ResponseType.plain));
+    final doc = html_parser.parse(res.data ?? '');
+    
+    final recientes = <RecentSerie>[];
+
+    // Buscamos los items que están dentro de la sección de "Series recientes"
+    // En el HTML están en <li class="col mb-4 ficha_efecto"> ... </li>
+    final items = doc.querySelectorAll('li.ficha_efecto');
+    
+    for (var item in items) {
+      final a = item.querySelector('a');
+      if (a == null) continue;
+      
+      final url = a.attributes['href'] ?? '';
+      final imgTag = a.querySelector('img');
+      // Latanime usa 'data-src' para lazy loading
+      final imagen = imgTag?.attributes['data-src'] ?? imgTag?.attributes['src'] ?? '';
+      
+      final h3 = a.querySelector('h3');
+      final titulo = h3?.text.trim() ?? '';
+
+      if (titulo.isNotEmpty && url.isNotEmpty) {
+        recientes.add(RecentSerie(
+          titulo: titulo,
+          url: url,
+          imagen: imagen,
         ));
       }
     }
