@@ -10,9 +10,15 @@
         "cookie_jar",
         "dio",
         "dio_cookie_manager",
-        "html"
+        "html",
+        "rolostream_core"
       ],
       "devDependencies": []
+    },
+    {
+      "name": "rolostream_core",
+      "version": "1.0.0",
+      "dependencies": []
     },
     {
       "name": "html",

@@ -74,6 +74,12 @@
       "languageVersion": "3.4"
     },
     {
+      "name": "rolostream_core",
+      "rootUri": "file:///C:/Dev/PubCache/git/rolostream_core-aa8f3715e06c619c79c507481414b67abcdb2eaa/",
+      "packageUri": "lib/",
+      "languageVersion": "3.0"
+    },
+    {
       "name": "source_span",
       "rootUri": "file:///C:/Dev/PubCache/hosted/pub.dev/source_span-1.10.2",
       "packageUri": "lib/",
