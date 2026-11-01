@@ -227,37 +227,41 @@ class LatanimePlugin {
     return recientes;
   }
 
-      Future<List<AiringAnime>> getAiringAnimes({int page = 1}) async {
-    final url = page == 1 
-        ? 'https://latanime.org/emision' 
+        Future<List<AiringAnime>> getAiringAnimes({int page = 1}) async {
+    final url = page == 1
+        ? 'https://latanime.org/emision'
         : 'https://latanime.org/emision?p=$page';
 
     final res = await _dio.get<String>(url, options: Options(responseType: ResponseType.plain));
     final doc = html_parser.parse(res.data ?? '');
-    
+
     final animes = <AiringAnime>[];
 
     final items = doc.querySelectorAll('.series');
-    
+
     for (var item in items) {
-      final a = item.closest('a');
+      // Buscar el enlace ancestro (equivalente a .closest('a'))
+      Element? a = item;
+      while (a != null && a.localName != 'a') {
+        a = a.parent;
+      }
       if (a == null) continue;
 
       final linkUrl = a.attributes['href'] ?? '';
       final imgTag = item.querySelector('img');
       final imagen = imgTag?.attributes['src'] ?? '';
-      
+
       final h3 = item.querySelector('h3');
       final titulo = h3?.text.trim() ?? '';
 
       final spanTipo = item.querySelector('span.opacity-75');
       final tipo = spanTipo?.text.trim() ?? '';
 
-      String anio = ''; // <-- CAMBIADO AQUÍ
+      String anio = '';
       final spans = item.querySelectorAll('span');
       for (var span in spans) {
         if (span.text.contains('20')) {
-          anio = span.text.trim(); // <-- CAMBIADO AQUÍ
+          anio = span.text.trim();
           break;
         }
       }
@@ -268,11 +272,11 @@ class LatanimePlugin {
           url: linkUrl,
           imagen: imagen,
           tipo: tipo,
-          anio: anio, // <-- CAMBIADO AQUÍ
+          anio: anio,
         ));
       }
     }
-    
+
     return animes;
   }
 }
