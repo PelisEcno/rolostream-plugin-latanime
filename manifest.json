@@ -1,0 +1,8 @@
+{
+  "name": "Latanime",
+  "version": "1.0.0",
+  "author": "RoloStream Team",
+  "description": "Plugin para obtener animes de latanime.org",
+  "entry_point": "lib/latanime_plugin.dart",
+  "class_name": "LatanimePlugin"
+}
