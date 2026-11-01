@@ -74,6 +74,22 @@ class AiringAnime {
   });
 }
 
+class FilterAnime {
+  final String titulo;
+  final String url;
+  final String imagen;
+  final String tipo;
+  final String anio;
+
+  FilterAnime({
+    required this.titulo,
+    required this.url,
+    required this.imagen,
+    required this.tipo,
+    required this.anio,
+  });
+}
+
 // --- Lógica del Plugin ---
 class LatanimePlugin {
   static const String _userAgent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36';
@@ -277,6 +293,74 @@ class LatanimePlugin {
       }
     }
 
+    return animes;
+  }
+
+    Future<List<FilterAnime>> getAnimesByFilter({
+    String genero = 'false',
+    String fecha = 'false',
+    String letra = 'false',
+    String categoria = 'false',
+    int page = 1,
+  }) async {
+    // Construimos la URL con los parámetros del filtro y la paginación
+    final uri = Uri.parse('https://latanime.org/animes').replace(
+      queryParameters: {
+        'fecha': fecha,
+        'genero': genero,
+        'letra': letra,
+        'categoria': categoria,
+        if (page > 1) 'p': page.toString(),
+      },
+    );
+
+    final res = await _dio.get<String>(uri.toString(), options: Options(responseType: ResponseType.plain));
+    final doc = html_parser.parse(res.data ?? '');
+    
+    final animes = <FilterAnime>[];
+
+    // En esta sección los items están en divs con clase "series"
+    final items = doc.querySelectorAll('.series');
+    
+    for (var item in items) {
+      // Buscar el enlace ancestro (reemplazando closest)
+      Element? a = item;
+      while (a != null && a.localName != 'a') {
+        a = a.parent;
+      }
+      if (a == null) continue;
+
+      final linkUrl = a.attributes['href'] ?? '';
+      final imgTag = item.querySelector('img');
+      // Ojo: en esta página usan data-src por el lazy load
+      final imagen = imgTag?.attributes['data-src'] ?? imgTag?.attributes['src'] ?? '';
+      
+      final h3 = item.querySelector('h3');
+      final titulo = h3?.text.trim() ?? '';
+
+      final spanTipo = item.querySelector('span.opacity-75');
+      final tipo = spanTipo?.text.trim() ?? '';
+
+      String anio = '';
+      final spans = item.querySelectorAll('span');
+      for (var span in spans) {
+        if (span.text.contains('20')) {
+          anio = span.text.trim();
+          break;
+        }
+      }
+
+      if (titulo.isNotEmpty && linkUrl.isNotEmpty) {
+        animes.add(FilterAnime(
+          titulo: titulo,
+          url: linkUrl,
+          imagen: imagen,
+          tipo: tipo,
+          anio: anio,
+        ));
+      }
+    }
+    
     return animes;
   }
 }
