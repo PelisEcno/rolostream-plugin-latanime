@@ -18,6 +18,15 @@ class AnimeResult {
   );
 }
 
+class RecentEpisode {
+  final String titulo;
+  final String url;
+  final String imagen;
+  final String fecha;
+  
+  RecentEpisode({required this.titulo, required this.url, required this.imagen, required this.fecha});
+}
+
 class Episode {
   final int numero;
   final String url;
@@ -123,5 +132,40 @@ class LatanimePlugin {
       }
     }
     return servers;
+  }
+
+    Future<List<RecentEpisode>> getLatestEpisodes() async {
+    // Obtenemos la página principal
+    final res = await _dio.get<String>('https://latanime.org/', options: Options(responseType: ResponseType.plain));
+    final doc = html_parser.parse(res.data ?? '');
+    
+    final recientes = <RecentEpisode>[];
+
+    // En el HTML, los episodios recientes están dentro de un div con clase "info" y luego "h2"
+    // Buscamos todos los enlaces que apunten a un episodio (/ver/)
+    final items = doc.querySelectorAll('.row .col-6 a[href*="/ver/"]');
+    
+    for (var item in items) {
+      final url = item.attributes['href'] ?? '';
+      final imgTag = item.querySelector('img');
+      final imagen = imgTag?.attributes['data-src'] ?? imgTag?.attributes['src'] ?? '';
+      
+      final h2 = item.querySelector('.info h2');
+      final titulo = h2?.text.trim() ?? '';
+      
+      final spanFecha = item.querySelector('.span-tiempo');
+      final fecha = spanFecha?.text.trim() ?? '';
+
+      if (titulo.isNotEmpty && url.isNotEmpty) {
+        recientes.add(RecentEpisode(
+          titulo: titulo,
+          url: url,
+          imagen: imagen,
+          fecha: fecha,
+        ));
+      }
+    }
+    
+    return recientes;
   }
 }
