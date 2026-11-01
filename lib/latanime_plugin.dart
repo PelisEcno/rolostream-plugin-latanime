@@ -58,6 +58,22 @@ class RecentSerie {
   RecentSerie({required this.titulo, required this.url, required this.imagen});
 }
 
+class AiringAnime {
+  final String titulo;
+  final String url;
+  final String imagen;
+  final String tipo; // "Latino", "Castellano", etc.
+  final String anio; // <-- CAMBIADO AQUÍ
+
+  AiringAnime({
+    required this.titulo,
+    required this.url,
+    required this.imagen,
+    required this.tipo,
+    required this.anio, // <-- CAMBIADO AQUÍ
+  });
+}
+
 // --- Lógica del Plugin ---
 class LatanimePlugin {
   static const String _userAgent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/156.0.0.0 Safari/537.36';
@@ -209,5 +225,54 @@ class LatanimePlugin {
     }
     
     return recientes;
+  }
+
+      Future<List<AiringAnime>> getAiringAnimes({int page = 1}) async {
+    final url = page == 1 
+        ? 'https://latanime.org/emision' 
+        : 'https://latanime.org/emision?p=$page';
+
+    final res = await _dio.get<String>(url, options: Options(responseType: ResponseType.plain));
+    final doc = html_parser.parse(res.data ?? '');
+    
+    final animes = <AiringAnime>[];
+
+    final items = doc.querySelectorAll('.series');
+    
+    for (var item in items) {
+      final a = item.closest('a');
+      if (a == null) continue;
+
+      final linkUrl = a.attributes['href'] ?? '';
+      final imgTag = item.querySelector('img');
+      final imagen = imgTag?.attributes['src'] ?? '';
+      
+      final h3 = item.querySelector('h3');
+      final titulo = h3?.text.trim() ?? '';
+
+      final spanTipo = item.querySelector('span.opacity-75');
+      final tipo = spanTipo?.text.trim() ?? '';
+
+      String anio = ''; // <-- CAMBIADO AQUÍ
+      final spans = item.querySelectorAll('span');
+      for (var span in spans) {
+        if (span.text.contains('20')) {
+          anio = span.text.trim(); // <-- CAMBIADO AQUÍ
+          break;
+        }
+      }
+
+      if (titulo.isNotEmpty && linkUrl.isNotEmpty) {
+        animes.add(AiringAnime(
+          titulo: titulo,
+          url: linkUrl,
+          imagen: imagen,
+          tipo: tipo,
+          anio: anio, // <-- CAMBIADO AQUÍ
+        ));
+      }
+    }
+    
+    return animes;
   }
 }
